@@ -169,14 +169,7 @@ module Babeltrace
     attach_function :bt_ctf_get_decl_event_name, [EventDecl], :string
     attach_function :bt_ctf_get_decl_fields, [EventDecl, Scope,  :pointer, :pointer], :int
 
-    class Trace
-      attr_reader :context
-      attr_reader :handle_id
-      def initialize(context, handle_id)
-        @context = context
-        @handle_id = handle_id
-      end
-
+    class Trace < Babeltrace::Trace
       def get_event_decl_list
         count = FFI::MemoryPointer::new(:uint)
         list = FFI::MemoryPointer::new(:pointer)

@@ -12,10 +12,11 @@ module Babeltrace
 
     def add_trace(path:, format: "ctf")
       handle_id = Babeltrace.bt_context_add_trace(self, path, format, nil, nil, nil)
-      if format == "ctf"
+      case format
+      when "ctf"
         return CTF::Trace::new(self, handle_id)
       else
-        return handle_id
+        return Trace::new(self, handle_id)
       end
     end
 
