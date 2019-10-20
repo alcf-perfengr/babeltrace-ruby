@@ -47,7 +47,7 @@ module Babeltrace
       end
 
       def get_int_len
-        CTF.bt_ctf_field_type(self)
+        CTF.bt_ctf_int_len(self)
       end
 
       def get_encoding
