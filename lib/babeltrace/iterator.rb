@@ -14,13 +14,43 @@ module Babeltrace
            :u, SeekUnion
   end
 
+  class IterPosManaged < FFI::ManagedStruct
+    class SeekUnion < FFI::Union
+      layout :seek_time, :uint64,
+             :restore, SavedPos.ptr
+    end
+    layout :type, IterPosType,
+           :u, SeekUnion
+
+    def self.release(ptr)
+      Babeltrace.bt_iter_free_pos(ptr)
+    end
+  end
+
   class Iter < FFI::Struct
     layout :dummy, :pointer
+    attr_accessor :child
+
+    def next
+      Babeltrace.bt_iter_next(self)
+    end
+
+    def get_pos
+      Babeltrace.bt_iter_get_pos(self)
+    end
+
+    def set_pos(pos)
+      Babeltrace.bt_iter_set_pos(self, pos)
+    end
+
+    def create_time_pos(timestamp)
+      Babeltrace.bt_iter_create_time_pos(self, timestamp)
+    end
   end
 
   attach_function :bt_iter_next, [Iter], :int
-  attach_function :bt_iter_get_pos, [Iter], IterPos
-  attach_function :bt_iter_free_pos, [IterPos], :void
-  attach_function :bt_iter_set_pos, [Iter, IterPos], :int
-  attach_function :bt_iter_create_time_pos, [Iter, :uint64], IterPos
+  attach_function :bt_iter_get_pos, [Iter], IterPosManaged.by_ref
+  attach_function :bt_iter_free_pos, [IterPosManaged], :void
+  attach_function :bt_iter_set_pos, [Iter, :pointer], :int #pointer to IterPos or IterPosManaged
+  attach_function :bt_iter_create_time_pos, [Iter, :uint64], IterPosManaged.by_ref
 end

@@ -5,5 +5,6 @@ module Babeltrace
   end
   require_relative 'ctf/callbacks'
   require_relative 'ctf/events'
+  require_relative 'ctf/iterator'
 end
 

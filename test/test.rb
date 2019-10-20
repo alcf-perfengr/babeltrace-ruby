@@ -15,7 +15,12 @@ class BabeltraceTest < Minitest::Test
     p t.get_path
     p t.get_timestamp_begin
     p t.get_timestamp_end
-    p t.get_event_decl_list.collect(&:name)
+    puts t.get_event_decl_list.collect(&:name)
+    it = t.iter_create
+    while (n = it.read_event.name)
+      p n
+      it.next
+    end
   end
 
 end

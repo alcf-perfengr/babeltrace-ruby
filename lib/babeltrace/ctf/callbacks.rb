@@ -2,7 +2,8 @@ module Babeltrace
   module CTF
 
     CBRet = enum :OK, :OK_STOP, :ERROR_STOP, :ERROR_CONTINUE
-    class Iter < Babeltrace::Iter
+    class Iter < FFI::ManagedStruct
+      layout :dummy, :pointer
     end
 
     class Dependencies < FFI::Struct
