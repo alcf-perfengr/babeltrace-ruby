@@ -34,6 +34,10 @@ module Babeltrace
         CTF.bt_ctf_get_int_signedness(self)
       end
 
+      def int_signed?
+        get_int_signedness == 1
+      end
+
       def get_int_base
         CTF.bt_ctf_get_int_base(self)
       end
@@ -218,6 +222,7 @@ module Babeltrace
         list = FFI::MemoryPointer::new(:pointer)
         res = CTF.bt_ctf_get_field_list(self, scope, list, count)
         count = count.read(:uint)
+        return [] if count == 0
         list = list.read_pointer.read_array_of_pointer(count)
         list.collect { |p| Definition::new(p) }
       end
@@ -225,6 +230,22 @@ module Babeltrace
 
       def get_field(scope, field)
         CTF.bt_ctf_get_field(self, scope, field)
+      end
+
+      def each_field(scope = :EVENT_FIELDS)
+        if block_given?
+          sc = self.top_level_scope(scope)
+          self.field_list(sc).each { |f| yield f }
+        else
+          return to_enum(:each_field, scope)
+        end
+      end
+
+      def find_field(field, scope = :EVENT_FIELDS)
+        sc = self.top_level_scope(scope)
+        r = get_field(sc, field)
+        return nil if r.pointer.null?
+        r
       end
 
       def get_index(field, index)

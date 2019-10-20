@@ -58,6 +58,20 @@ module Babeltrace
         get_iter.create_time_pos(timestamp)
       end
 
+      def each
+        if block_given?
+          loop do
+            e = self.read_event
+            break if e.pointer.null?
+            yield e
+            r = self.next
+            break if r != 0
+          end
+	else
+          return to_enum(:each)
+        end
+      end
+
     end
 
     attach_function :bt_ctf_iter_create, [Context, :pointer, :pointer], Iter.by_ref #pointers to IterPos or IterPosManaged

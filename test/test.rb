@@ -17,10 +17,33 @@ class BabeltraceTest < Minitest::Test
     p t.get_timestamp_end
     puts t.get_event_decl_list.collect(&:name)
     it = t.iter_create
-    while (n = it.read_event.name)
-      p n
-      it.next
-    end
+    it.each { |ev|
+      puts "#{ev.name}: #{ev.timestamp}"
+      Babeltrace::CTF::Scope.symbols.each { |sym|
+        puts "\t#{sym}"
+        ev.each_field(sym) { |f|
+          d = f.decl
+          str = "\t\t#{f.name} #{d.field_type}"
+          case d.field_type
+          when :INTEGER
+            if d.int_signed?
+              str << " #{f.get_int64}"
+            else
+              str << " #{f.get_uint64}"
+            end
+          when :SEQUENCE
+            sz = ev.find_field("_#{f.name}_length", sym).get_uint64
+            str << "[#{sz}] {"
+            str << sz.times.collect { |i|
+              sf = ev.get_index(f, i)
+              sf.get_uint64
+            }.join(", ")
+            str << "}"
+          end
+          puts str
+        }
+      }
+    }
   end
 
 end
