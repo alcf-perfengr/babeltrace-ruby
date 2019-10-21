@@ -12,11 +12,13 @@ module Babeltrace
     end
 
     def get_timestamp_begin(clock_type = :REAL)
-      Babeltrace.bt_trace_handle_get_timestamp_begin(@context, @handle_id, clock_type)
+      t = Babeltrace.bt_trace_handle_get_timestamp_begin(@context, @handle_id, clock_type)
+      t = Time.at(0, t, :nsec) if clock_type == :REAL
     end
 
     def get_timestamp_end(clock_type = :REAL)
-      Babeltrace.bt_trace_handle_get_timestamp_end(@context, @handle_id, clock_type)
+      t = Babeltrace.bt_trace_handle_get_timestamp_end(@context, @handle_id, clock_type)
+      t = Time.at(0, t, :nsec) if clock_type == :REAL
     end
   end
 

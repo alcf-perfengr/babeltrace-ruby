@@ -13,12 +13,12 @@ class BabeltraceTest < Minitest::Test
     require 'babeltrace/ctf'
     t = c.add_trace(path: "./trace-lud/ust/uid/1000/64-bit/")
     p t.get_path
-    p t.get_timestamp_begin
-    p t.get_timestamp_end
+    puts t.get_timestamp_begin.strftime("%Y-%m-%d %H:%M:%S.%9L %z")
+    puts t.get_timestamp_end.strftime("%Y-%m-%d %H:%M:%S.%9L %z")
     puts t.get_event_decl_list.collect(&:name)
     it = t.iter_create
     it.each { |ev|
-      puts "#{ev.name}: #{ev.timestamp}"
+      puts "#{ev.name}: #{ev.timestamp.strftime("%H:%M:%S.%9L")}"
       Babeltrace::CTF::Scope.symbols.each { |sym|
         puts "\t#{sym}"
         ev.each_field(sym) { |f|

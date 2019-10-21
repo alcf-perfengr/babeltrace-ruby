@@ -215,7 +215,7 @@ module Babeltrace
       alias cycles get_cycles
 
       def get_timestamp
-        CTF.bt_ctf_get_timestamp(self)
+        Time.at(0, CTF.bt_ctf_get_timestamp(self), :nsec)
       end
       alias timestamp get_timestamp
 
