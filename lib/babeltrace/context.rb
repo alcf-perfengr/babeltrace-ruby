@@ -1,9 +1,8 @@
 module Babeltrace
 
-  class Context
-    def initialize(ptr = Babeltrace.bt_context_create, retain = true)
+  class Context # < ManagedStruct
+    def initialize(ptr = Babeltrace.bt_context_create)
       super(ptr)
-      Babeltrace.bt_context_get(ptr) if retain
     end
 
     def self.release(ptr)

@@ -5,11 +5,11 @@ require 'babeltrace'
 class BabeltraceTest < Minitest::Test
 
   def test_context
-    c = Babeltrace::Context::new(Babeltrace.bt_context_create)
+    c = Babeltrace::Context::new
   end
 
   def test_ctf
-    c = Babeltrace::Context::new(Babeltrace.bt_context_create)
+    c = Babeltrace::Context::new
     require 'babeltrace/ctf'
     t = c.add_trace(path: "./trace-lud/ust/uid/1000/64-bit/")
     p t.get_path

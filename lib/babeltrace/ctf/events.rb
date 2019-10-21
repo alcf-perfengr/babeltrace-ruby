@@ -188,7 +188,9 @@ module Babeltrace
 
     class Event
       def get_context
-        CTF.bt_ctf_event_get_context(self)
+        c = CTF.bt_ctf_event_get_context(self)
+        Babeltrace.bt_context_get(c)
+        c
       end
       alias context get_context
 
