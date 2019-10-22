@@ -1,4 +1,4 @@
-[ '../lib', 'lib' ].each { |d| $:.unshift(d) if File::directory?(d) }
+[ '../lib', 'lib', '../ext/babeltrace_c/', 'ext/babeltrace_c/' ].each { |d| $:.unshift(d) if File::directory?(d) }
 require 'minitest/autorun'
 require 'babeltrace'
 
@@ -20,29 +20,19 @@ class BabeltraceTest < Minitest::Test
     it.each { |ev|
       puts "#{ev.name}: #{ev.timestamp.strftime("%H:%M:%S.%9L")}"
       Babeltrace::CTF::Scope.symbols.each { |sym|
-        puts "\t#{sym}"
-        ev.each_field(sym) { |f|
-          d = f.decl
-          str = "\t\t#{f.name} #{d.field_type}"
-          case d.field_type
-          when :INTEGER
-            if d.int_signed?
-              str << " #{f.get_int64}"
-            else
-              str << " #{f.get_uint64}"
-            end
-          when :SEQUENCE
-            sz = ev.find_field("_#{f.name}_length", sym).get_uint64
-            str << "[#{sz}] {"
-            str << sz.times.collect { |i|
-              sf = ev.get_index(f, i)
-              sf.get_uint64
-            }.join(", ")
-            str << "}"
-          end
-          puts str
-        }
+        defi = ev.top_level_scope(sym)
+        next unless defi
+        puts "\t#{sym}: #{defi.value}"
       }
+#      Babeltrace::CTF::Scope.symbols.each { |sym|
+#        defi = ev.top_level_scope(sym)
+#        next unless defi
+#        puts "\t#{sym}"
+#        ev.each_field(:EVENT_FIELDS) { |f|
+#          d = f.decl
+#          puts "\t\t#{f.name} #{d.field_type} #{f.value}"
+#        }
+#      }
     }
   end
 
