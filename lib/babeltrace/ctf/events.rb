@@ -24,13 +24,8 @@ module Babeltrace
                           :UNKNOWN
 
     module Internal
-      class Declaration < FFI::Struct
-        layout :id, TypeID,
-               :alignment, :size_t,
-               :ref, :int,
-               :declaration_free, :pointer,
-               :definition_new, :pointer,
-               :definition_free, :pointer
+      class Declaration #< FFI::Struct
+        layout :dummy, :pointer
 
         def field_type
           CTF.bt_ctf_field_type(self)
@@ -64,20 +59,6 @@ module Babeltrace
           CTF.bt_ctf_get_array_len(self)
         end
       end
-
-      class DeclarationArray < FFI::Struct
-        layout :p, Declaration,
-               :len, :size_t,
-               :elem, Declaration.by_ref,
-               :scope, :pointer
-      end
-
-      class DeclarationSequence < FFI::Struct
-        layout :p, Declaration,
-               :length_name, :pointer,
-               :elem, Declaration.by_ref,
-               :scope, :pointer
-      end
     end
     attach_function :bt_ctf_field_type, [Internal::Declaration], TypeID
     attach_function :bt_ctf_get_int_signedness, [Internal::Declaration], :int
@@ -109,11 +90,7 @@ module Babeltrace
 
     module Internal
       class Definition < FFI::Struct
-        layout :declaration, Declaration,
-               :index, :int,
-               :name, :uint32,
-               :ref, :int,
-               :scope, :pointer
+        layout :dummy, :pointer
 
         def field_name
           CTF.bt_ctf_field_name(self)
@@ -169,21 +146,6 @@ module Babeltrace
           d = CTF.bt_ctf_get_struct_field_index(self, i)
           CTF::Definition.create(d)
         end
-      end
-
-      class DefinitionArray < FFI::Struct
-        layout :p, Definition,
-               :declaration, DeclarationArray.by_ref,
-               :elems, :pointer,
-               :string, :pointer
-      end
-
-      class DefinitionSequence < FFI::Struct
-        layout :p, Definition,
-               :declaration, DeclarationSequence.by_ref,
-               :length, Definition.by_ref,
-               :elems, :pointer,
-               :string, :pointer
       end
     end
 
@@ -563,12 +525,7 @@ module Babeltrace
       end
     end
 
-    class ArrayDecl < Declaration
-      def elem
-        array_decl = Internal::DeclarationArray::new(@declaration.pointer)
-        Declaration::create(array_decl[:elem])
-      end
-
+    class ArrayDecl # < Declaration
       def def_class
         e = elem
         if e.kind_of?(IntegerDecl) && e.len == 8 && 
@@ -584,12 +541,7 @@ module Babeltrace
       end
     end
 
-    class SequenceDecl < Declaration
-      def elem
-        array_decl = Internal::DeclarationSequence::new(@declaration.pointer)
-        Declaration::create(array_decl[:elem])
-      end
-
+    class SequenceDecl # < Declaration
       def def_class
         e = elem
         if e.kind_of?(IntegerDecl) && e.len == 8 &&

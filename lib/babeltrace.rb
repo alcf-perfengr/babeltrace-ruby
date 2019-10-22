@@ -1,4 +1,5 @@
 require 'ffi'
+require 'babeltrace_c'
 
 module Babeltrace
   extend FFI::Library
