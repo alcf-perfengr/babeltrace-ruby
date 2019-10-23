@@ -24,7 +24,7 @@ module Babeltrace
                           :UNKNOWN
 
     module Internal
-      class Declaration #< FFI::Struct
+      class Declaration # < FFI::Struct
         layout :dummy, :pointer
 
         def field_type
@@ -89,7 +89,7 @@ module Babeltrace
     attach_function :bt_ctf_get_decl_field_name, [Internal::FieldDecl], :string
 
     module Internal
-      class Definition < FFI::Struct
+      class Definition # < FFI::Struct
         layout :dummy, :pointer
 
         def field_name
@@ -420,7 +420,8 @@ module Babeltrace
       end
 
       def value
-        @definition.get_char_array.read_bytes(len)
+        return [] if len == 0
+        @definition.get_char_sequence.read_bytes(len)
       end
     end
 
