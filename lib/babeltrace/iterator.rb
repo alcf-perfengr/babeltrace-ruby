@@ -43,6 +43,12 @@ module Babeltrace
       Babeltrace.bt_iter_set_pos(self, pos)
     end
 
+    def rewind
+      pos = IterPos::new
+      pos[:type] = :SEEK_BEGIN
+      set_pos(pos)
+    end
+
     def create_time_pos(timestamp)
       Babeltrace.bt_iter_create_time_pos(self, timestamp)
     end

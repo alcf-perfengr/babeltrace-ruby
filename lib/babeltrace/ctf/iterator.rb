@@ -54,11 +54,16 @@ module Babeltrace
         get_iter.set_pos(pos)
       end
 
+      def rewind
+        get_iter.rewind
+      end
+
       def create_time_pos(timestamp)
         get_iter.create_time_pos(timestamp)
       end
 
       def each
+        rewind
         if block_given?
           loop do
             e = self.read_event
