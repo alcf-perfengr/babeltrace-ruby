@@ -338,13 +338,16 @@ module Babeltrace
 
     class EnumDef < Definition
       def int
-        IntegerDef::new(@definition.get_enum_int)
+        @definition.get_enum_int
       end
 
       def string
         @definition.get_enum_str
       end
-      alias value string
+
+      def value
+        { int.value => string }
+      end
     end
 
     class StringDef < Definition
