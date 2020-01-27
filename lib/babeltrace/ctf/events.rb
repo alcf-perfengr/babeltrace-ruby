@@ -423,7 +423,7 @@ module Babeltrace
       end
 
       def value
-        return [] if len == 0
+        return "" if len == 0
         @definition.get_char_sequence.read_bytes(len)
       end
     end
