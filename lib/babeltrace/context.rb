@@ -1,8 +1,12 @@
+require 'walk'
+
 module Babeltrace
 
   class Context # < ManagedStruct
+    attr_reader :traces
     def initialize(ptr = Babeltrace.bt_context_create)
       super(ptr)
+      @traces = []
     end
 
     def self.release(ptr)
@@ -13,14 +17,35 @@ module Babeltrace
       handle_id = Babeltrace.bt_context_add_trace(self, path, format, nil, nil, nil)
       case format
       when "ctf"
-        return CTF::Trace::new(self, handle_id)
+        trace = CTF::Trace::new(self, handle_id)
       else
-        return Trace::new(self, handle_id)
+        trace = Trace::new(self, handle_id)
       end
+      @traces.push trace
+      trace
+    end
+
+    def add_traces(path:, format: "ctf")
+      traces = []
+      Walk.walk(path) do |path, dirs, files|
+        trace = add_trace(path: path, format: format) if files.include?("metadata")
+        traces.push trace if trace
+      end
+      traces
     end
 
     def remove_trace(trace_id)
       Babeltrace.bt_context_remove_trace(self, trace_id)
+    end
+
+    def get_timestamp_begin(clock_type = :REAL)
+      return nil if traces.empty?
+      traces.collect { |t| t.get_timestamp_begin(clock_type) }.min
+    end
+
+    def get_timestamp_end(clock_type = :REAL)
+      return nil if traces.empty?
+      traces.collect { |t| t.get_timestamp_end(clock_type) }.max
     end
   end
 

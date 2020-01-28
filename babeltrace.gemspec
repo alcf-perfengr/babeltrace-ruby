@@ -12,4 +12,5 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
   s.required_ruby_version = '>= 2.3.0'
   s.add_dependency 'ffi', '~> 1.9', '>=1.9.3'
+  s.add_dependency 'walk', '~> 0.1', '>=0.1.0'
 end

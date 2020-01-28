@@ -14,10 +14,10 @@ class BabeltraceTest < Minitest::Test
     t = c.add_trace(path: "./trace-lud/ust/uid/1000/64-bit/")
 #    t = c.add_trace(path: "/home/videau/lttng-traces/my-userspace-opencl-session-20191020-154348/ust/uid/1000/64-bit/")
     p t.get_path
-    puts t.get_timestamp_begin.strftime("%Y-%m-%d %H:%M:%S.%9L %z")
-    puts t.get_timestamp_end.strftime("%Y-%m-%d %H:%M:%S.%9L %z")
+    puts c.get_timestamp_begin.strftime("%Y-%m-%d %H:%M:%S.%9L %z")
+    puts c.get_timestamp_end.strftime("%Y-%m-%d %H:%M:%S.%9L %z")
     puts t.get_event_decl_list.collect(&:name)
-    it = t.iter_create
+    it = c.iter_create
     it.each { |ev|
       puts "#{ev.name}: #{ev.timestamp.strftime("%H:%M:%S.%9L")}"
       Babeltrace::CTF::Scope.symbols.each { |sym|

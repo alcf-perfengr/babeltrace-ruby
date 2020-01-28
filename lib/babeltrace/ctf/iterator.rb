@@ -1,20 +1,20 @@
 module Babeltrace
-  module CTF
-    class Trace
-      def iter_create(begin_pos: nil, end_pos: nil)
-        CTF.bt_ctf_iter_create(@context, begin_pos, end_pos)
-      end
-
-      def iter_create_intersect
-        begin_pos_ptr = FFI::MemoryPointer::new(:pointer)
-        end_pos_ptr = FFI::MemoryPointer::new(:pointer)
-        iter = CTF.bt_ctf_iter_create_intersect(@context, begin_pos_ptr, end_pos_ptr)
-        begin_pos = IterPosManaged::new(begin_pos_ptr.read_pointer)
-        end_pos = IterPosManaged::new(end_pos_ptr.read_pointer)
-        [iter, begin_pos, end_pos]
-      end
+  class Context
+    def iter_create(begin_pos: nil, end_pos: nil)
+      CTF.bt_ctf_iter_create(self, begin_pos, end_pos)
     end
 
+    def iter_create_intersect
+      begin_pos_ptr = FFI::MemoryPointer::new(:pointer)
+      end_pos_ptr = FFI::MemoryPointer::new(:pointer)
+      iter = CTF.bt_ctf_iter_create_intersect(@context, begin_pos_ptr, end_pos_ptr)
+      begin_pos = IterPosManaged::new(begin_pos_ptr.read_pointer)
+      end_pos = IterPosManaged::new(end_pos_ptr.read_pointer)
+      [iter, begin_pos, end_pos]
+    end
+  end
+
+  module CTF
     class Iter
       def self.release(ptr)
         CTF.bt_ctf_iter_destroy(ptr)

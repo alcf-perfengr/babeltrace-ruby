@@ -346,7 +346,7 @@ module Babeltrace
       end
 
       def value
-        { int.value => string }
+        [ int.value, string ]
       end
     end
 
