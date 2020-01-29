@@ -24,7 +24,7 @@ module Babeltrace
                           :UNKNOWN
 
     module Internal
-      class Declaration # < FFI::Struct
+      class Declaration # < Babeltrace::Declaration < FFI::Struct
         layout :dummy, :pointer
 
         def field_type
@@ -89,7 +89,7 @@ module Babeltrace
     attach_function :bt_ctf_get_decl_field_name, [Internal::FieldDecl], :string
 
     module Internal
-      class Definition # < FFI::Struct
+      class Definition # < Babeltrace::Definition < FFI::Struct
         layout :dummy, :pointer
 
         def field_name
@@ -285,13 +285,9 @@ module Babeltrace
     attach_function :bt_ctf_event_name, [Event], :string
     attach_function :bt_ctf_get_cycles, [Event], :uint64
     attach_function :bt_ctf_get_timestamp, [Event], :uint64
-    attach_function :bt_ctf_get_field_list, [Event, Internal::Definition, :pointer, :pointer], :int
-    attach_function :bt_ctf_get_field, [Event, Internal::Definition, :string], Internal::Definition.by_ref
-    attach_function :bt_ctf_get_index, [Event, Internal::Definition, :uint], Internal::Definition.by_ref
-    # Hack
-    attach_function :bt_array_index, [Internal::Definition, :uint64], Internal::Definition.by_ref
-    attach_function :bt_sequence_len, [Internal::Definition], :uint64
-    attach_function :bt_sequence_index, [Internal::Definition, :uint64], Internal::Definition.by_ref
+    attach_function :bt_ctf_get_field_list, [Event, Babeltrace::Definition, :pointer, :pointer], :int
+    attach_function :bt_ctf_get_field, [Event, Babeltrace::Definition, :string], Internal::Definition.by_ref
+    attach_function :bt_ctf_get_index, [Event, Babeltrace::Definition, :uint], Internal::Definition.by_ref
 
     class Definition
       attr_reader :definition
@@ -392,8 +388,7 @@ module Babeltrace
       end
 
       def index(i)
-        d = CTF.bt_array_index(@definition, i)
-        return Definition.create(d)
+        return Definition.create(@definition.array_index(i))
       end
 
       def value
@@ -413,12 +408,11 @@ module Babeltrace
 
     class SequenceDef < Definition
       def len
-        CTF.bt_sequence_len(@definition)
+        @definition.sequence_len
       end
 
       def index(i)
-        d = CTF.bt_sequence_index(@definition, i)
-        return Definition.create(d)
+        return Definition.create(@definition.sequence_index(i))
       end
 
       def value
@@ -428,7 +422,7 @@ module Babeltrace
 
     class SequenceTextDef < Definition
       def len
-        CTF.bt_sequence_len(@definition)
+        @definition.sequence_len
       end
 
       def value

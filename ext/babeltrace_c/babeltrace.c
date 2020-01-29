@@ -7,6 +7,8 @@
 static VALUE m_babeltrace;
 static VALUE m_ctf;
 static VALUE m_internal;
+static VALUE c_definition;
+static VALUE c_declaration;
 static VALUE c_internal_declaration;
 static VALUE c_internal_definition;
 static VALUE c_ctf_declaration;
@@ -66,8 +68,10 @@ void Init_babeltrace_c() {
   m_ffi = rb_const_get(rb_cObject, rb_intern("FFI"));
   c_ffi_pointer = rb_const_get(m_ffi, rb_intern("Pointer"));
   c_ffi_struct = rb_const_get(m_ffi, rb_intern("Struct"));
-  c_internal_declaration = rb_define_class_under(m_internal, "Declaration", c_ffi_struct);
-  c_internal_definition = rb_define_class_under(m_internal, "Definition", c_ffi_struct);
+  c_definition = rb_define_class_under(m_babeltrace, "Definition", c_ffi_struct);
+  c_declaration = rb_define_class_under(m_babeltrace, "Declaration", c_ffi_struct);
+  c_internal_declaration = rb_define_class_under(m_internal, "Declaration", c_declaration);
+  c_internal_definition = rb_define_class_under(m_internal, "Definition", c_definition);
   c_ctf_declaration = rb_define_class_under(m_ctf, "Declaration", rb_cObject);
   c_ctf_array_declaration = rb_define_class_under(m_ctf, "ArrayDecl", c_ctf_declaration);
   c_ctf_sequence_declaration = rb_define_class_under(m_ctf, "SequenceDecl", c_ctf_declaration);
