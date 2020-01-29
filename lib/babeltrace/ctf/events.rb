@@ -60,13 +60,13 @@ module Babeltrace
         end
       end
     end
-    attach_function :bt_ctf_field_type, [Internal::Declaration], TypeID
-    attach_function :bt_ctf_get_int_signedness, [Internal::Declaration], :int
-    attach_function :bt_ctf_get_int_base, [Internal::Declaration], :int
-    attach_function :bt_ctf_get_int_byte_order, [Internal::Declaration], :int
-    attach_function :bt_ctf_get_int_len, [Internal::Declaration], :ssize_t
-    attach_function :bt_ctf_get_encoding, [Internal::Declaration], StringEncoding
-    attach_function :bt_ctf_get_array_len, [Internal::Declaration], :int
+    attach_function :bt_ctf_field_type, [Babeltrace::Declaration], TypeID
+    attach_function :bt_ctf_get_int_signedness, [Babeltrace::Declaration], :int
+    attach_function :bt_ctf_get_int_base, [Babeltrace::Declaration], :int
+    attach_function :bt_ctf_get_int_byte_order, [Babeltrace::Declaration], :int
+    attach_function :bt_ctf_get_int_len, [Babeltrace::Declaration], :ssize_t
+    attach_function :bt_ctf_get_encoding, [Babeltrace::Declaration], StringEncoding
+    attach_function :bt_ctf_get_array_len, [Babeltrace::Declaration], :int
 
     module Internal
       class FieldDecl < FFI::Struct
@@ -149,18 +149,18 @@ module Babeltrace
       end
     end
 
-    attach_function :bt_ctf_field_name, [Internal::Definition], :string
-    attach_function :bt_ctf_get_decl_from_def, [Internal::Definition], Internal::Declaration.by_ref
-    attach_function :bt_ctf_get_struct_field_count, [Internal::Definition], :uint64
-    attach_function :bt_ctf_get_uint64, [Internal::Definition], :uint64
-    attach_function :bt_ctf_get_int64, [Internal::Definition], :int64
-    attach_function :bt_ctf_get_enum_int, [Internal::Definition], Internal::Definition.by_ref
-    attach_function :bt_ctf_get_enum_str, [Internal::Definition], :string
-    attach_function :bt_ctf_get_char_array, [Internal::Definition], :pointer
-    attach_function :bt_ctf_get_string, [Internal::Definition], :string
-    attach_function :bt_ctf_get_float, [Internal::Definition], :double
-    attach_function :bt_ctf_get_variant, [Internal::Definition], Internal::Definition.by_ref
-    attach_function :bt_ctf_get_struct_field_index, [Internal::Definition, :uint64], Internal::Definition.by_ref
+    attach_function :bt_ctf_field_name, [Babeltrace::Definition], :string
+    attach_function :bt_ctf_get_decl_from_def, [Babeltrace::Definition], Internal::Declaration.by_ref
+    attach_function :bt_ctf_get_struct_field_count, [Babeltrace::Definition], :uint64
+    attach_function :bt_ctf_get_uint64, [Babeltrace::Definition], :uint64
+    attach_function :bt_ctf_get_int64, [Babeltrace::Definition], :int64
+    attach_function :bt_ctf_get_enum_int, [Babeltrace::Definition], Internal::Definition.by_ref
+    attach_function :bt_ctf_get_enum_str, [Babeltrace::Definition], :string
+    attach_function :bt_ctf_get_char_array, [Babeltrace::Definition], :pointer
+    attach_function :bt_ctf_get_string, [Babeltrace::Definition], :string
+    attach_function :bt_ctf_get_float, [Babeltrace::Definition], :double
+    attach_function :bt_ctf_get_variant, [Babeltrace::Definition], Internal::Definition.by_ref
+    attach_function :bt_ctf_get_struct_field_index, [Babeltrace::Definition, :uint64], Internal::Definition.by_ref
 
     module Internal
       class EventDecl < FFI::Struct
