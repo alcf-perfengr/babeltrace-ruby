@@ -199,6 +199,15 @@ module Babeltrace
     attach_function :bt_ctf_get_event_decl_list, [:int, Context, :pointer, :pointer], :int
 
     class Event
+
+      def get_id
+        defi = self.top_level_scope(:STREAM_EVENT_HEADER).value
+        id = defi["id"][0]
+        id = defi["v"]["id"] if id == 65535
+        id
+      end
+      alias id get_id
+
       def get_context
         c = CTF.bt_ctf_event_get_context(self)
         Babeltrace.bt_context_get(c)
