@@ -176,9 +176,14 @@ module Babeltrace
           list = FFI::MemoryPointer::new(:pointer)
           res = CTF.bt_ctf_get_decl_fields(self, scope, list, count)
           count = count.read(:uint)
-          list = list.read_pointer.read_array_of_pointer(count)
-          list.collect { |p| FieldDecl::new(p) }
+          if count > 0
+            list = list.read_pointer.read_array_of_pointer(count)
+            list.collect { |p| FieldDecl::new(p) }
+          else
+            []
+          end
         end
+        alias decl_fields get_decl_fields
       end
     end
 
