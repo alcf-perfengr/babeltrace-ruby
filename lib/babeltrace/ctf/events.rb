@@ -403,7 +403,7 @@ module Babeltrace
 
     class ArrayTextDef < Definition
       def len
-        @definition.decl.array_len
+        @definition.decl.len
       end
 
       def value
